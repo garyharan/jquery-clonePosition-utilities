@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>JavaScript unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="lib/jsunittest.js" type="text/javascript"></script>
+  <script src="lib/jquery.js" type="text/javascript"></script>
+
+  <!-- TODO: REPLACE "example_library_to_test" throughout file with name of file to test -->
+  <script src="jquery.clonePosition.js" type="text/javascript"></script>
+  
+  <link rel="stylesheet" href="lib/unittest.css" type="text/css" />
+</head>
+<body>
+  
+<div id="content">
+  
+  <div id="header">
+    <h1>JavaScript unit test file</h1>
+    <p>
+      This file tests <strong>jquery.replace.js</strong>.
+    </p>
+  </div>
+
+  <!-- Log output (one per Runner, via {testLog: "testlog"} option)-->
+  <div id="testlog"></div>
+  
+  <!-- Put sample/test html here -->
+  <div id="sample" style="visibility: hidden;">
+    <a href="#" style="position: absolute; left: -100px; top: -100px; height: 40px; width: 40px; border: 1px solid black;" id="topMe">Sample HTML to Clone</a>
+    
+    <div id="cloned" style="border: 1px solid red">
+    </div>
+    
+    <a href="#" id="noPosition">No position given with CSS... this should appear with a red border around it.</a>
+  </div>
+  
+</div>
+
+
+
+<script type="text/javascript">
+// <![CDATA[
+  new Test.Unit.Runner({
+    setup: function(){
+      $()
+    },
+    
+    testClone: function(){ with(this) {
+      $('#cloned').clonePosition('#topMe');
+      
+      assertEqual('40', $('#cloned').width());
+      assertEqual('40', $('#cloned').height());
+      var offset = $('#cloned').offset();
+      assertEqual('-100', offset.left);
+      assertEqual('-100', offset.top);
+    }},
+    
+    testCloneUnpositioned: function(){ with(this) {
+      $('#cloned').clonePosition('#noPosition');
+      
+      var noPositionOffset = $('#noPosition').offset();
+      var clonedOffset     = $('#cloned').offset();
+      assertEqual(noPositionOffset.left, clonedOffset.left);
+      assertEqual(noPositionOffset.top,  clonedOffset.top);
+      
+      assertEqual($('#noPosition').width(), $('#cloned').width());
+      assertEqual($('#noPosition').height(), $('#cloned').height());
+    }},
+    
+    testClonePositionWithOptions:function(){ with(this) {
+      $('#cloned').clonePosition('#topMe', {
+        cloneWidth: false,
+        cloneHeight: false,
+        offsetLeft: 10,
+        offsetTop: 10
+      });
+      
+      assertNotEqual($('#topMe').width(),  $('#cloned').width());
+      assertNotEqual($('#topMe').height(), $('#cloned').height());
+      var offset = $('#cloned').offset();
+      assertEqual('-90', offset.left);
+      assertEqual('-90', offset.top);
+    }},
+    
+    testChaining: function(){ with(this){
+      $('#cloned').clonePosition('#noPosition').clonePosition('#topMe');
+      assertEqual('40', $('#cloned').width());
+      assertEqual('40', $('#cloned').height());
+      var offset = $('#cloned').offset();
+      assertEqual('-100', offset.left);
+      assertEqual('-100', offset.top);
+    }}
+  }); 
+// ]]>
+</script>
+</body>
+</html>
